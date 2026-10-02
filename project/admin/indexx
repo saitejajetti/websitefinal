@@ -1,0 +1,504 @@
+<?php
+// Admin Dashboard
+// Database will be connected later.
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Saiteja grocery </title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #111;
+            color: white;
+            padding: 25px 15px;
+            overflow-y: auto;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .admin-title {
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: #ddd;
+            padding: 13px 15px;
+            margin-bottom: 5px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: white;
+            color: #111;
+        }
+
+        .logout {
+            margin-top: 30px !important;
+            background: #c62828;
+            color: white !important;
+        }
+
+        .logout:hover {
+            background: #e53935 !important;
+            color: white !important;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 30px;
+        }
+
+        .welcome {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e5e5e5;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        .card-icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .card .number {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .card-link {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #111;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .card-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Quick Actions */
+        .section-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action {
+            background: #111;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 18px 10px;
+            border-radius: 7px;
+            transition: 0.2s;
+        }
+
+        .action:hover {
+            background: #333;
+        }
+
+        /* Recent Orders */
+        .orders-box {
+            background: white;
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid #e5e5e5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #111;
+            color: white;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .completed {
+            background: #d9f7df;
+            color: #176b2c;
+        }
+
+        .pending {
+            background: #fff0c2;
+            color: #856404;
+        }
+
+        /* Mobile */
+        @media (max-width: 1000px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                display: block;
+            }
+
+            .welcome {
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo">
+        SAITEJA grocery 
+    </div>
+
+    <div class="admin-title">
+        ADMIN PANEL
+    </div>
+
+    <nav class="menu">
+
+        <a href="index.php" class="active">
+            🏠 Dashboard
+        </a>
+
+        <a href="products.php">
+            📦 Products
+        </a>
+
+        <a href="add_product.php">
+            ➕ Add Product
+        </a>
+
+        <a href="orders.php">
+            🛒 Orders
+        </a>
+
+        <a href="payments.php">
+            💳 Payments
+        </a>
+
+        <a href="sales.php">
+            📊 Sales
+        </a>
+
+        <a href="profits.php">
+            💰 Profits
+        </a>
+
+        <a href="discounts.php">
+            🏷️ Discounts
+        </a>
+
+        <a href="users.php">
+            👥 Users
+        </a>
+
+        <a href="helpdesk.php">
+            ❓ Help Desk
+        </a>
+
+        <a href="ml_questions.php">
+            🤖 ML Questions
+        </a>
+
+        <a href="../index.php">
+            🌐 View Website
+        </a>
+
+        <a href="login.php" class="logout">
+            🚪 Logout
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+    <div class="topbar">
+
+        <div>
+            <h1>Admin Dashboard</h1>
+
+            <p class="welcome">
+                Welcome to Saiteja grocery  administration panel.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- DASHBOARD CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <div class="card-icon">📦</div>
+            <h3>Total Products</h3>
+            <div class="number">0</div>
+
+            <a href="products.php" class="card-link">
+                Manage Products →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">🛒</div>
+            <h3>Total Orders</h3>
+            <div class="number">0</div>
+
+            <a href="orders.php" class="card-link">
+                View Orders →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">💳</div>
+            <h3>Total Payments</h3>
+            <div class="number">₹0</div>
+
+            <a href="payments.php" class="card-link">
+                View Payments →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">📊</div>
+            <h3>Total Sales</h3>
+            <div class="number">₹0</div>
+
+            <a href="sales.php" class="card-link">
+                View Sales →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">💰</div>
+            <h3>Total Profit</h3>
+            <div class="number">₹0</div>
+
+            <a href="profits.php" class="card-link">
+                View Profit →
+            </a>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">👥</div>
+            <h3>Total Users</h3>
+            <div class="number">0</div>
+
+            <a href="users.php" class="card-link">
+                Manage Users →
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+    <h2 class="section-title">
+        Quick Actions
+    </h2>
+
+    <div class="quick-actions">
+
+        <a href="add_product.php" class="action">
+            ➕ Add Product
+        </a>
+
+        <a href="discounts.php" class="action">
+            🏷️ Create Discount
+        </a>
+
+        <a href="helpdesk.php" class="action">
+            ❓ Manage Help Desk
+        </a>
+
+        <a href="ml_questions.php" class="action">
+            🤖 Manage ML Questions
+        </a>
+
+    </div>
+
+
+    <!-- RECENT ORDERS -->
+    <h2 class="section-title">
+        Recent Orders
+    </h2>
+
+    <div class="orders-box">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>#1001</td>
+                    <td>Sample Customer</td>
+                    <td>₹0</td>
+                    <td>
+                        <span class="status pending">
+                            Pending
+                        </span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>#1000</td>
+                    <td>Sample Customer</td>
+                    <td>₹0</td>
+                    <td>
+                        <span class="status completed">
+                            Completed
+                        </span>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+</body>
+</html>
